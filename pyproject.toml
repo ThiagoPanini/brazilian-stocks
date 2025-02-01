@@ -8,6 +8,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "pydantic (>=2.10.6,<3.0.0)"
 ]
 
 [tool.poetry]
@@ -17,6 +18,16 @@ packages = [{include = "brazilian_stocks", from = "src"}]
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.3.4"
 pre-commit = "^4.1.0"
+pytest = "^8.3.4"
+
+
+[tool.poetry.group.discovery.dependencies]
+jupyter = "^1.1.1"
+pandas = "^2.2.3"
+investpy = "^1.0.8"
+pydantic = "^2.10.6"
+yfinance = "^0.2.52"
+beautifulsoup4 = "^4.12.3"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
