@@ -1,3 +1,6 @@
+# Arquivos temporários usados em tempo de exploração de funcionalidades
+**.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
