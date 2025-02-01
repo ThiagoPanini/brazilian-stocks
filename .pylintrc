@@ -7,6 +7,9 @@ disable=
       C0114,  # missing-module-docstring
       R0801,  # Duplicate-code
       R0903,  # too-few-public-methods
+      W0613,  # unused argument
+      W0108,  # unnecessary-lambda
+      W1203,  # logging-fstring-interpolation
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
