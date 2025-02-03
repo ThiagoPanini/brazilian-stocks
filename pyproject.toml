@@ -19,6 +19,7 @@ packages = [{include = "brazilian_stocks", from = "src"}]
 pylint = "^3.3.4"
 pre-commit = "^4.1.0"
 pytest = "^8.3.4"
+requests-mock = "^1.12.1"
 
 
 [tool.poetry.group.discovery.dependencies]
