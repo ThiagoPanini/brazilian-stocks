@@ -85,28 +85,38 @@ class FundamentusGetTickersAdapter(ITickersInfoAdapter):
         return BeautifulSoup(html_text, self.html_parser)
 
 
-    def __find_tickers(self, html_parsed: BeautifulSoup) -> list[str]:
-        tickers = [
-            row.find_all("a")[0].text.strip()
-            for row in html_parsed.find_all("tr")[1:]
+    def __find_tickers_info(self, html_parsed: BeautifulSoup) -> list[dict[str, str]]:
+        # Retornando tabela do HTML contendo células que possuem informações de ativos
+        tickers_cells = list({
+            row.find("td") for row in html_parsed.find_all("tr") if row.find("td") is not None
+        })
+
+        # Extraindo e consolidando informações em um dicionário
+        tickers_info = [
+            {
+                "codigo_papel": cell.find("a").text.upper().strip(),
+                "nome_companhia": cell.find("span").get("title").upper().strip()
+            }
+            for cell in tickers_cells
         ]
 
-        return tickers
+        return tickers_info
 
 
     def get_tickers(self) -> list[Ticker]:
         self.__configure_request_session()
         html_text = self.__get_request_content()
         html_parsed = self.__parse_html_content(html_text=html_text)
-        tickers = self.__find_tickers(html_parsed=html_parsed)
+        tickers_info = self.__find_tickers_info(html_parsed=html_parsed)
 
         # Adaptando resultado como instâncias da entidade esperada
         tickers_objects = [
             Ticker(
-                code=code,
+                code=info["codigo_papel"],
+                company_name=info["nome_companhia"],
                 source_info="fundamentus"
             )
-            for code in tickers
+            for info in tickers_info
         ]
 
         return tickers_objects
