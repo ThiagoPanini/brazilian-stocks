@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, model_validator, field_validator
 class Ticker(BaseModel):
     code: str
     code_international: str
+    company_name: str
     source_info: str
     dt_extracted: datetime = Field(default_factory=lambda: datetime.now().date())
 
