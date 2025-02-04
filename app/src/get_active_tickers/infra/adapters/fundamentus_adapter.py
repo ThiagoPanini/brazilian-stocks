@@ -1,88 +1,46 @@
-from typing import Any
-
-import requests
-from requests.adapters import HTTPAdapter, Retry
-
 from bs4 import BeautifulSoup
 
 from app.src.get_active_tickers.domain.entities.ticker import Ticker
 from app.src.get_active_tickers.domain.interfaces.adapters_interface import ITickersInfoAdapter
-from app.src._cross.utils.logger import get_logger
+from app.src.get_active_tickers.infra.adapters.requests_adapter import RequestsAdapter
 
 
-logger = get_logger()
+# Definindo URL como uma variável apartada para facilitar reuso em mocks
+FUNDAMENTUS_URL = "https://www.fundamentus.com.br/resultado.php"
 
-# Parâmetros de configuração do requests para extração de dados do portal Fundamentus
-REQUEST_CONFIG_PARAMS = {
-    "url": "https://www.fundamentus.com.br/resultado.php",
-    "timeout": 10,
-    "headers": {
+# Definindo adapter para requisições HTTP/HTTPs via requests
+REQUESTS_ADAPTER = RequestsAdapter(
+    url=FUNDAMENTUS_URL,
+    timeout=10,
+    headers={
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
-    "num_retries": 3,
-    "backoff_factor": 1,
-    "status_forcelist": [500, 502, 503, 504]
-}
+    num_retries=3,
+    backoff_factor=3,
+    status_forcelist=[500, 502, 503, 504]
+)
 
 
 class FundamentusGetTickersAdapter(ITickersInfoAdapter):
     def __init__(
         self,
-        session: requests.sessions.Session = requests.Session(),
-        request_config_params: dict[str, Any] = REQUEST_CONFIG_PARAMS,
+        requests_adapter: RequestsAdapter = REQUESTS_ADAPTER,
         html_parser: str = "lxml"
     ) -> None:
-        self.session = session
-        self.request_config_params = request_config_params
-        self.html_parser = html_parser
-
-
-    def __configure_request_session(self) -> None:
-        retry_config = Retry(
-            total=self.request_config_params["num_retries"],
-            backoff_factor=self.request_config_params["backoff_factor"],
-            status_forcelist=self.request_config_params["status_forcelist"]
-        )
-
-        http_adapter = HTTPAdapter(max_retries=retry_config)
-        self.session.mount("https://", http_adapter)
-        self.session.mount("http://", http_adapter)
+        self.__requests_adapter = requests_adapter
+        self.__html_parser = html_parser
 
 
     def __get_request_content(self) -> str:
-        try:
-            response = self.session.get(
-                url=self.request_config_params["url"],
-                headers=self.request_config_params["headers"],
-                timeout=self.request_config_params["timeout"]
-            )
-            response.raise_for_status()
-            return response.text
-
-        except requests.Timeout as to_error:
-            logger.error(f"Erro de timeout ao acessar a url {self.request_config_params["url"]}")
-            raise to_error
-
-        except requests.ConnectionError as conn_error:
-            logger.error(f"Erro de conexão ao acessar a url {self.request_config_params["url"]}")
-            raise conn_error
-
-        except requests.HTTPError as http_error:
-            logger.error(f"Erro de HTTP ao acessar a url {self.request_config_params["url"]} "
-                         f"com status code {http_error.response.status_code}")
-            raise http_error
-
-        except requests.RequestException as req_error:
-            logger.error(f"Erro inesperado ao acessar a url {self.request_config_params["url"]}")
-            raise req_error
+        return self.__requests_adapter.get().text
 
 
     def __parse_html_content(self, html_text: str) -> BeautifulSoup:
         if not isinstance(html_text, str):
             raise TypeError("O conteúdo HTML (html_text) deve ser uma string válida")
 
-        return BeautifulSoup(html_text, self.html_parser)
+        return BeautifulSoup(html_text, self.__html_parser)
 
 
     def __find_tickers_info(self, html_parsed: BeautifulSoup) -> list[dict[str, str]]:
@@ -91,7 +49,7 @@ class FundamentusGetTickersAdapter(ITickersInfoAdapter):
             row.find("td") for row in html_parsed.find_all("tr") if row.find("td") is not None
         })
 
-        # Extraindo e consolidando informações em um dicionário
+        # Extraindo e consolidando informações em uma lista ordenada de dicionários
         tickers_info = sorted([
             {
                 "codigo_papel": cell.find("a").text.upper().strip(),
@@ -104,7 +62,6 @@ class FundamentusGetTickersAdapter(ITickersInfoAdapter):
 
 
     def get_tickers(self) -> list[Ticker]:
-        self.__configure_request_session()
         html_text = self.__get_request_content()
         html_parsed = self.__parse_html_content(html_text=html_text)
         tickers_info = self.__find_tickers_info(html_parsed=html_parsed)
