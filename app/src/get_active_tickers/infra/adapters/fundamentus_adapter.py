@@ -92,13 +92,13 @@ class FundamentusGetTickersAdapter(ITickersInfoAdapter):
         })
 
         # Extraindo e consolidando informações em um dicionário
-        tickers_info = [
+        tickers_info = sorted([
             {
                 "codigo_papel": cell.find("a").text.upper().strip(),
                 "nome_companhia": cell.find("span").get("title").upper().strip()
             }
             for cell in tickers_cells
-        ]
+        ], key=lambda x: x["codigo_papel"])
 
         return tickers_info
 
