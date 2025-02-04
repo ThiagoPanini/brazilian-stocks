@@ -27,7 +27,7 @@ def test_get_tickers_fundamentus_retorna_objeto_esperado(
 
 @pytest.mark.adapter
 @pytest.mark.fundamentus
-@pytest.skip.reason("Testes redundantes para fins didáticos")
+@pytest.mark.skip(reason="Testes redundantes para fins didáticos")
 def test_get_tickers_fundamentus_retorna_lista(
     fundamentus_get_tickers_response
 ):
@@ -42,7 +42,7 @@ def test_get_tickers_fundamentus_retorna_lista(
 
 @pytest.mark.adapter
 @pytest.mark.fundamentus
-@pytest.skip.reason("Testes redundantes para fins didáticos")
+@pytest.mark.skip(reason="Testes redundantes para fins didáticos")
 def test_get_tickers_fundamentus_retorna_lista_com_elementos(
     fundamentus_get_tickers_response
 ):
@@ -57,7 +57,7 @@ def test_get_tickers_fundamentus_retorna_lista_com_elementos(
 
 @pytest.mark.adapter
 @pytest.mark.fundamentus
-@pytest.skip.reason("Testes redundantes para fins didáticos")
+@pytest.mark.skip(reason="Testes redundantes para fins didáticos")
 def test_get_tickers_fundamentus_retorna_lista_com_elementos_da_entidade_esperada(
     fundamentus_get_tickers_response
 ):
