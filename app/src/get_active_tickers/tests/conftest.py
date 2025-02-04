@@ -3,7 +3,7 @@ import requests_mock
 
 from app.src.get_active_tickers.infra.adapters.fundamentus_adapter import (
     FundamentusGetTickersAdapter,
-    FUNDAMENTUS_URL
+    REQUESTS_ADAPTER
 )
 
 from app.src.get_active_tickers.tests.mocks.mocked_fundamentus_adapter import (
@@ -17,7 +17,7 @@ def fundamentus_get_tickers_response(**kwargs):
     # Mockando resposta do requests
     requests_mocker = kwargs["requests_mocker"]
     requests_mocker.get(
-        url=FUNDAMENTUS_URL,
+        url=REQUESTS_ADAPTER.get_url(),
         text=MOCKED_FUNDAMENTUS_GET_TICKERS_REQUESTS_RESPONSE
     )
 

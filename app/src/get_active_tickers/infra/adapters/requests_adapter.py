@@ -69,3 +69,7 @@ class RequestsAdapter(IRequestsAdapter):
         except requests.RequestException as req_error:
             logger.error(f"Erro inesperado ao acessar a url {self.__url}")
             raise req_error
+
+
+    def get_url(self) -> str:
+        return self.__url

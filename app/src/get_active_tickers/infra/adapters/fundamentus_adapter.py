@@ -5,12 +5,9 @@ from app.src.get_active_tickers.domain.interfaces.adapters_interface import ITic
 from app.src.get_active_tickers.infra.adapters.requests_adapter import RequestsAdapter
 
 
-# Definindo URL como uma variável apartada para facilitar reuso em mocks
-FUNDAMENTUS_URL = "https://www.fundamentus.com.br/resultado.php"
-
 # Definindo adapter para requisições HTTP/HTTPs via requests
 REQUESTS_ADAPTER = RequestsAdapter(
-    url=FUNDAMENTUS_URL,
+    url="https://www.fundamentus.com.br/resultado.php",
     timeout=10,
     headers={
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
