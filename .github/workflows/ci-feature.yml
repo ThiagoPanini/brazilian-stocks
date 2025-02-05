@@ -35,7 +35,7 @@ jobs:
       
       - name: 🪄 Linter Analysis with Pylint
         run:
-          pylint --rcfile=.pylintrc
+          pylint --rcfile=.pylintrc app
       
       - name: 🔎 Static Type Analysis with Mypy
         run:
