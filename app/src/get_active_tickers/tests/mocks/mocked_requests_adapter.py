@@ -1,0 +1,7 @@
+# Configuração de mocks para os parâmetros do RequestsAdapter
+MOCKED_REQUESTS_URL = "https://example.com/api"
+MOCKED_REQUESTS_TIMEOUT = 10
+MOCKED_REQUESTS_HEADERS = {"User-Agent": "test-agent"}
+MOCKED_REQUESTS_NUM_RETRIES = 3
+MOCKED_REQUESTS_BACKOFF_FACTOR = 3
+MOCKED_REQUESTS_STATUS_FORCELIST = [500, 502, 503, 504]
