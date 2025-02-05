@@ -1,12 +1,14 @@
-from datetime import datetime
+from typing import Optional
+from datetime import date, datetime
 from pydantic import BaseModel, Field, model_validator, field_validator
+
 
 class Ticker(BaseModel):
     code: str
-    code_international: str
+    code_international: Optional[str] = None
     company_name: str
     source_info: str
-    dt_extracted: datetime = Field(default_factory=lambda: datetime.now().date())
+    dt_extracted: date = Field(default_factory=lambda: datetime.now().date())
 
 
     @model_validator(mode="before")
