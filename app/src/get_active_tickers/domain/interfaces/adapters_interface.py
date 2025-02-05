@@ -8,7 +8,7 @@ class IHttpAdapter(ABC):
     """
     @abstractmethod
     def get(self):
-        raise NotImplementedError
+        pass
 
 
 class ITickersInfoAdapter(ABC):
@@ -17,4 +17,4 @@ class ITickersInfoAdapter(ABC):
     """
     @abstractmethod
     def get_tickers(self) -> list[Ticker]:
-        raise NotImplementedError
+        pass
