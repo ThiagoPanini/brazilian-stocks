@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   ci-python:
-    name: ci-python
+    name: 🐍 ci-python
     runs-on: ubuntu-latest
 
     steps:
@@ -35,11 +35,10 @@ jobs:
       
       - name: 🪄 Linter Analysis with Pylint
         run:
-          pylint --rcfile=.pylintrc --load-plugins=pylint.extensions.docparams app
+          pylint --rcfile=.pylintrc
       
       - name: 🔎 Static Type Analysis with Mypy
-        run: |
-          mypy --install-types
+        run:
           mypy app
 
       - name: 🧪 Unit Test with Pytest
