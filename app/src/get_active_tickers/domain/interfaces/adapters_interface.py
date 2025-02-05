@@ -1,14 +1,13 @@
 from abc import ABC, abstractmethod
-import requests
 from app.src.get_active_tickers.domain.entities.ticker import Ticker
 
 
-class IRequestsAdapter(ABC):
+class IHttpAdapter(ABC):
     """
     Interface de contrato para requisições HTTP/HTTPs via requests
     """
     @abstractmethod
-    def get(self) -> requests.models.Response:
+    def get(self):
         raise NotImplementedError
 
 

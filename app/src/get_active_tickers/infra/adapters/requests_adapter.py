@@ -2,13 +2,13 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 
 from app.src._cross.utils.logger import get_logger
-from app.src.get_active_tickers.domain.interfaces.adapters_interface import IRequestsAdapter
+from app.src.get_active_tickers.domain.interfaces.adapters_interface import IHttpAdapter
 
 
 logger = get_logger()
 
 
-class RequestsAdapter(IRequestsAdapter):
+class RequestsAdapter(IHttpAdapter):
     def __init__(
         self,
         url: str,
