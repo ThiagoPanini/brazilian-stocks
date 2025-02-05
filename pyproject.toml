@@ -20,6 +20,7 @@ pylint = "^3.3.4"
 pre-commit = "^4.1.0"
 pytest = "^8.3.4"
 requests-mock = "^1.12.1"
+mypy = "^1.14.1"
 
 
 [tool.poetry.group.discovery.dependencies]
