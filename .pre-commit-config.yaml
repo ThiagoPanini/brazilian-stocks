@@ -1,4 +1,5 @@
 repos:
+  # 1️⃣ Linter com Pylint
   - repo: local
     hooks:
       - id: pylint
@@ -13,6 +14,17 @@ repos:
             "--rcfile=.pylintrc",  # Link para arquivo de configuração do pylint
             "--load-plugins=pylint.extensions.docparams",  # Carrega a extensão
           ]
+
+  # 2️⃣ Análise de tipagem com Mypy
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+  
+  # 3️⃣ Geração automática de arquivo de requirements
   - repo: local
     hooks:
       - id: requirements
