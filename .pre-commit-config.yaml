@@ -3,7 +3,7 @@ repos:
   - repo: local
     hooks:
       - id: pylint
-        name: 🪄 | pylint
+        name: 📏 | pylint
         entry: pylint
         language: system
         types: [python]
