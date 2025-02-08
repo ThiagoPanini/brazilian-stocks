@@ -16,4 +16,4 @@ class DynamodbTickersInfoRepository(ITickersInfoRepository):
 
 
     def persist(self, ticker: Ticker) -> None:
-        self.__dynamodb_table.put_item(ticker.model_dump())
+        _ = self.__dynamodb_table.put_item(Item=ticker.model_dump())
