@@ -33,7 +33,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r ./requirements.txt
       
-      - name: 🪄 Linter Analysis with Pylint
+      - name: 📏 Linter Analysis with Pylint
         run:
           pylint --rcfile=.pylintrc app
       
@@ -45,7 +45,7 @@ jobs:
         run:
           pytest -vv --color=yes --cov=./ --cov-report=xml
 
-      - name: 📈 Test Coverage with Codecov
+      - name: ☂️ Test Coverage with Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
