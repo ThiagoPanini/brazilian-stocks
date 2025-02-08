@@ -1,10 +1,19 @@
+import time
 import pytest
 import requests_mock
+from moto import mock_aws
 
+import boto3
+
+from app.src.get_active_tickers.domain.entities.ticker import Ticker
 from app.src.get_active_tickers.infra.adapters.fundamentus_adapter import (
     FundamentusGetTickersAdapter,
     RequestsAdapter,
     REQUESTS_ADAPTER
+)
+
+from app.src.get_active_tickers.infra.repositories.dynamodb_repository import (
+    DynamodbTickersInfoRepository
 )
 
 from app.src.get_active_tickers.tests.mocks.mocked_fundamentus_adapter import (
@@ -18,6 +27,18 @@ from app.src.get_active_tickers.tests.mocks.mocked_requests_adapter import (
     MOCKED_REQUESTS_NUM_RETRIES,
     MOCKED_REQUESTS_BACKOFF_FACTOR,
     MOCKED_REQUESTS_STATUS_FORCELIST
+)
+
+from app.src.get_active_tickers.tests.mocks.mocked_dynamodb_repository import (
+    MOCKED_DYNAMODB_TABLE_NAME,
+    MOCKED_DYNAMODB_TABLE_KEY_SCHEMA,
+    MOCKED_DYNAMODB_TABLE_ATTRIBUTE_DEFINITIONS,
+    MOCKED_DYNAMODB_TABLE_BILLING_MODE,
+    MOCKED_BOTO3_CLIENT_REGION
+)
+
+from app.src.get_active_tickers.tests.mocks.mocked_entity_ticker import (
+    MOCKED_TICKER
 )
 
 
@@ -48,3 +69,42 @@ def requests_adapter():
         backoff_factor=MOCKED_REQUESTS_BACKOFF_FACTOR,
         status_forcelist=MOCKED_REQUESTS_STATUS_FORCELIST
     )
+
+
+@pytest.fixture
+@mock_aws
+def mocked_dynamodb_repository_setup(mocked_ticker: Ticker = MOCKED_TICKER):
+    def create_table_and_put_item():
+        # Criando tabela mockada no DynamoDB
+        boto3_client = boto3.client("dynamodb")
+        r = boto3_client.create_table(
+            TableName=MOCKED_DYNAMODB_TABLE_NAME,
+            KeySchema=MOCKED_DYNAMODB_TABLE_KEY_SCHEMA,
+            AttributeDefinitions=MOCKED_DYNAMODB_TABLE_ATTRIBUTE_DEFINITIONS,
+            BillingMode=MOCKED_DYNAMODB_TABLE_BILLING_MODE
+        )
+
+        # Validando criação da tabela
+        while True:
+            r = boto3_client.describe_table(TableName=MOCKED_DYNAMODB_TABLE_NAME)
+            status = r["Table"]["TableStatus"]
+
+            if status == 'ACTIVE':
+                break
+
+            time.sleep(2)
+
+        # Persistindo um item na tabela mockada
+        mocked_dynamodb_repository = DynamodbTickersInfoRepository(
+            table_name=MOCKED_DYNAMODB_TABLE_NAME,
+            region_name=MOCKED_BOTO3_CLIENT_REGION
+        )
+        mocked_dynamodb_repository.persist(ticker=mocked_ticker)
+
+    return create_table_and_put_item
+
+
+@pytest.fixture
+@mock_aws
+def mocked_dynamodb_client():
+    return boto3.client("dynamodb", region_name=MOCKED_BOTO3_CLIENT_REGION)
