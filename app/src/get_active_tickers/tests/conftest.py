@@ -73,11 +73,19 @@ def requests_adapter():
 
 @pytest.fixture
 @mock_aws
-def mocked_dynamodb_repository_setup(mocked_ticker: Ticker = MOCKED_TICKER):
+def mocked_dynamodb_client():
+    return boto3.client("dynamodb", region_name=MOCKED_BOTO3_CLIENT_REGION)
+
+
+@pytest.fixture
+@mock_aws
+def mocked_dynamodb_repository_setup(
+    mocked_client = mocked_dynamodb_client,
+    mocked_ticker: Ticker = MOCKED_TICKER
+):
     def create_table_and_put_item():
         # Criando tabela mockada no DynamoDB
-        boto3_client = boto3.client("dynamodb")
-        r = boto3_client.create_table(
+        r = mocked_client.create_table(
             TableName=MOCKED_DYNAMODB_TABLE_NAME,
             KeySchema=MOCKED_DYNAMODB_TABLE_KEY_SCHEMA,
             AttributeDefinitions=MOCKED_DYNAMODB_TABLE_ATTRIBUTE_DEFINITIONS,
@@ -86,7 +94,7 @@ def mocked_dynamodb_repository_setup(mocked_ticker: Ticker = MOCKED_TICKER):
 
         # Validando criação da tabela
         while True:
-            r = boto3_client.describe_table(TableName=MOCKED_DYNAMODB_TABLE_NAME)
+            r = mocked_client.describe_table(TableName=MOCKED_DYNAMODB_TABLE_NAME)
             status = r["Table"]["TableStatus"]
 
             if status == 'ACTIVE':
@@ -102,9 +110,3 @@ def mocked_dynamodb_repository_setup(mocked_ticker: Ticker = MOCKED_TICKER):
         mocked_dynamodb_repository.persist(ticker=mocked_ticker)
 
     return create_table_and_put_item
-
-
-@pytest.fixture
-@mock_aws
-def mocked_dynamodb_client():
-    return boto3.client("dynamodb", region_name=MOCKED_BOTO3_CLIENT_REGION)
