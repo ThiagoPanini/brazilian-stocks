@@ -80,12 +80,12 @@ def mocked_dynamodb_client():
 @pytest.fixture
 @mock_aws
 def mocked_dynamodb_repository_setup(
-    mocked_client = mocked_dynamodb_client,
+    mocked_dynamodb_client,   # pylint: disable=redefined-outer-name
     mocked_ticker: Ticker = MOCKED_TICKER
 ):
     def create_table_and_put_item():
         # Criando tabela mockada no DynamoDB
-        r = mocked_client.create_table(
+        r = mocked_dynamodb_client.create_table(
             TableName=MOCKED_DYNAMODB_TABLE_NAME,
             KeySchema=MOCKED_DYNAMODB_TABLE_KEY_SCHEMA,
             AttributeDefinitions=MOCKED_DYNAMODB_TABLE_ATTRIBUTE_DEFINITIONS,
@@ -94,7 +94,7 @@ def mocked_dynamodb_repository_setup(
 
         # Validando criação da tabela
         while True:
-            r = mocked_client.describe_table(TableName=MOCKED_DYNAMODB_TABLE_NAME)
+            r = mocked_dynamodb_client.describe_table(TableName=MOCKED_DYNAMODB_TABLE_NAME)
             status = r["Table"]["TableStatus"]
 
             if status == 'ACTIVE':
