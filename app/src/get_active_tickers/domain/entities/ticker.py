@@ -8,7 +8,7 @@ class Ticker(BaseModel):
     code_international: Optional[str] = None
     company_name: str
     source_info: str
-    dt_extracted: str = Field(default_factory=lambda: datetime.now().date().isoformat())
+    dt_extracted: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d"))
 
 
     @model_validator(mode="before")
