@@ -1,0 +1,3 @@
+locals {
+  teste = "teste"
+}
