@@ -32,10 +32,6 @@ jobs:
         run: terraform validate
         working-directory: infra/aws/get-active-tickers
 
-      - name: 🔀 Terraform Plan
-        run: terraform plan
-        working-directory: infra/aws/get-active-tickers
-
   release:
     name: 🚀 terraform-module-releaser
     runs-on: ubuntu-latest
