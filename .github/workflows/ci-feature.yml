@@ -63,15 +63,15 @@ jobs:
         with:
           terraform_version: 1.10.5
 
-      - name: Terraform Init
+      - name: ▶️ Terraform Init
         run: terraform init
         working-directory: infra/aws/get-active-tickers
 
-      - name: Terraform Validate
+      - name: ⏏️ Terraform Validate
         run: terraform validate
         working-directory: infra/aws/get-active-tickers
 
-      - name: Terraform Plan
+      - name: 🔀 Terraform Plan
         run: terraform plan
         working-directory: infra/aws/get-active-tickers
 
