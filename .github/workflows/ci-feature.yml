@@ -87,21 +87,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🔓 PR to main
-        uses: repo-sync/pull-request@v2
-        with:
-          source_branch: ${{ github.ref }}
-          destination_branch: "main"
-          pr_title: "pr(main): ${{ github.ref }} -> main"
-          pr_template: ".github/pull_request_template.md"
-          pr_assignee: "ThiagoPanini"
-          pr_label: "github-bot 🤖"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 🔓 PR to main
         uses: peter-evans/create-pull-request@v7
         with:
-          base: ${{ github.ref }}
+          base: main
           title: "pr(main): ${{ github.ref }} -> main"
           body-path: ".github/pull_request_template.md"
           labels: "github-bot 🤖"
+          commit-message: "bot: abertura automática de PR para branch main"
           
